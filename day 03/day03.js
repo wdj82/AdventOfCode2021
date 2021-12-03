@@ -60,9 +60,8 @@ function calculateOnesAndZeroes(array, currentBit = 0) {
     // return the oxygen and co2 arrays based on the most ones and zeroes
     if (ones.length >= zeroes.length) {
         return { oxygen: ones, co2: zeroes };
-    } else {
-        return { oxygen: zeroes, co2: ones };
     }
+    return { oxygen: zeroes, co2: ones };
 }
 
 // find the final binary number for the oxygen or co2
@@ -83,7 +82,7 @@ function getOxygenOrCo2(array, target = 'oxygen') {
 }
 
 function lifeSupport(input) {
-    let { oxygen, co2 } = calculateOnesAndZeroes(input);
+    const { oxygen, co2 } = calculateOnesAndZeroes(input);
 
     const oxygenBinary = getOxygenOrCo2(oxygen);
     const co2Binary = getOxygenOrCo2(co2, 'co2');
