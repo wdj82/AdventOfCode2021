@@ -21,7 +21,6 @@ function countFish(maxDays) {
     while (currentDay < maxDays) {
         const newFish = fishTimers[0];
         totalFish += newFish;
-        fishTimers[0] = 0;
 
         for (let i = 1; i <= 8; i++) {
             fishTimers[i - 1] = fishTimers[i];
