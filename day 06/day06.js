@@ -5,7 +5,7 @@ const initialFishTimers = rawInput.split(',').map(Number);
 
 function countFish(maxDays) {
     // save how many fish for each internal timer
-    const fishTimers = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 };
+    const fishTimers = new Array(9).fill(0);
     let totalFish = 0;
     let currentDay = 0;
 
@@ -14,6 +14,7 @@ function countFish(maxDays) {
         fishTimers[initialFishTimers[i]] += 1;
         totalFish += 1;
     }
+    console.log(fishTimers);
 
     // Each day, all zero fish become sixes,
     // with the same number added to eight and the total fish count.
