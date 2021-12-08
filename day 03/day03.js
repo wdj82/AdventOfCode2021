@@ -1,3 +1,6 @@
+// Advent of Code day 3
+// https://adventofcode.com/2021/day/3
+
 import rawInput from './rawInput.js';
 // const rawInput = `00100
 // 11110
@@ -91,5 +94,9 @@ function lifeSupport(input) {
 }
 
 const input = rawInput.split('\n');
-console.log('Part one answer is:', powerConsumption(input));
-console.log('Part two answer is:', lifeSupport(input));
+// console.log('Part one answer is:', powerConsumption(input));
+// console.log('Part two answer is:', lifeSupport(input));
+const partOne = powerConsumption(input);
+const partTwo = lifeSupport(input);
+document.getElementById('partOne').appendChild(document.createTextNode(partOne));
+document.getElementById('partTwo').appendChild(document.createTextNode(partTwo));

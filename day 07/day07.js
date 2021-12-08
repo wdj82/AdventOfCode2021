@@ -1,3 +1,6 @@
+// Advent of Code day 7
+// https://adventofcode.com/2021/day/7
+
 // import { exampleInput as rawInput } from './rawInput.js';
 import { puzzleInput as rawInput } from './rawInput.js';
 
@@ -44,5 +47,7 @@ function findLeastFuel({ crabsPerLevel, maxLevel }) {
 
 const crabs = sortCrabs();
 const [partOneMinFuelCost, partTwoMinFuelCost] = findLeastFuel(crabs);
-console.log('The answer to part one is:', partOneMinFuelCost);
-console.log('The answer to part two is:', partTwoMinFuelCost);
+// console.log('The answer to part one is:', partOneMinFuelCost);
+// console.log('The answer to part two is:', partTwoMinFuelCost);
+document.getElementById('partOne').appendChild(document.createTextNode(partOneMinFuelCost));
+document.getElementById('partTwo').appendChild(document.createTextNode(partTwoMinFuelCost));

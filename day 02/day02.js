@@ -1,3 +1,6 @@
+// Advent of Code day 2
+// https://adventofcode.com/2021/day/2
+
 import rawInput from './rawInput.js';
 
 // const rawInput = `forward 5
@@ -25,7 +28,7 @@ function calcPositionPartOne(input) {
                 throw new Error('unknown command');
         }
     });
-    console.log(position);
+    // console.log(position);
     return position.horizontal * position.depth;
 }
 
@@ -48,7 +51,7 @@ function calcPositionPartTwo(input) {
                 throw new Error('unknown command');
         }
     });
-    console.log(position);
+    // console.log(position);
     return position.horizontal * position.depth;
 }
 
@@ -57,5 +60,9 @@ const input = rawInput.split('\n').map((instruction) => {
     return { command, value: Number(value) };
 });
 
-console.log('Part one solution is:', calcPositionPartOne(input));
-console.log('Part two solution is:', calcPositionPartTwo(input));
+// console.log('Part one solution is:', calcPositionPartOne(input));
+// console.log('Part two solution is:', calcPositionPartTwo(input));
+const partOne = calcPositionPartOne(input);
+const partTwo = calcPositionPartTwo(input);
+document.getElementById('partOne').appendChild(document.createTextNode(partOne));
+document.getElementById('partTwo').appendChild(document.createTextNode(partTwo));

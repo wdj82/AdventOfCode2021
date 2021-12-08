@@ -1,3 +1,6 @@
+// Advent of Code day 6
+// https://adventofcode.com/2021/day/6
+
 // import { exampleInput as rawInput } from './rawInput.js';
 import { puzzleInput as rawInput } from './rawInput.js';
 
@@ -14,7 +17,7 @@ function countFish(maxDays) {
         fishTimers[initialFishTimers[i]] += 1;
         totalFish += 1;
     }
-    console.log(fishTimers);
+    // console.log(fishTimers);
 
     // Each day, all zero fish become sixes,
     // with the same number added to eight and the total fish count.
@@ -36,5 +39,7 @@ function countFish(maxDays) {
     return totalFish;
 }
 
-console.log('The answer to part one is:', countFish(80));
-console.log('The answer to part two is:', countFish(256));
+// console.log('The answer to part one is:', countFish(80));
+// console.log('The answer to part two is:', countFish(256));
+document.getElementById('partOne').appendChild(document.createTextNode(countFish(80)));
+document.getElementById('partTwo').appendChild(document.createTextNode(countFish(256)));

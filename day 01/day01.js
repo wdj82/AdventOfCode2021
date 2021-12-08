@@ -1,3 +1,6 @@
+// Advent of Code day 1
+// https://adventofcode.com/2021/day/1
+
 import rawInput from './rawInput.js';
 // const rawInput = `199
 // 200
@@ -36,5 +39,9 @@ function depthIncreasesOfThree(input) {
 }
 
 const input = rawInput.split('\n').map(Number);
-console.log('Part one answer:', depthIncreases(input));
-console.log('Part two answer:', depthIncreasesOfThree(input));
+// console.log('Part one answer:', depthIncreases(input));
+// console.log('Part two answer:', depthIncreasesOfThree(input));
+const partOne = depthIncreases(input);
+const partTwo = depthIncreasesOfThree(input);
+document.getElementById('partOne').appendChild(document.createTextNode(partOne));
+document.getElementById('partTwo').appendChild(document.createTextNode(partTwo));
