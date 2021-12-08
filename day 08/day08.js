@@ -1,3 +1,6 @@
+// Advent of Code day 8
+// https://adventofcode.com/2021/day/8
+
 // import { exampleInput as rawInput } from './rawInput.js';
 import { puzzleInput as rawInput } from './rawInput.js';
 
@@ -37,7 +40,7 @@ function findDigits(input) {
     let upperLeft = null;
     let lowerLeft = null;
 
-    // group up the digits by length, saving 3, 4, and 7
+    // group up the digits by length, saving 1, 4, 7, and 8
     signals.forEach((signal) => {
         if (signal.length === 2) {
             segments[2] = signal.split('');
@@ -58,25 +61,27 @@ function findDigits(input) {
         }
     });
 
-    // remove the 2 segment from the 4 segment - leaving the upper right and middle segments unknown
-    segments[4] = intersection(segments[4], segments[2]);
-
-    // get the segments missing from 0, 6, and 9 (the six length segments each lack one segment)
+    // get the segments missing from 0, 6, and 9 by comparing with 8 (the six length segments each lack one segment)
     const missingSegments = segments[6].map((sixes) => [intersection(segments[7], sixes)[0], sixes.join('')]);
 
     // using the known segments from 1, 4, 7, 8 we can compare them to the missing segments of 0, 6, and 9
+    // 1 gives the possible upper right and lower right segments
+    // 4 has the upper left and middle after removing the segments from 1
+    // 7 the top segment after removing the segments from 1 - the only segment we know for sure
+    // 8 contains the bottom and lower left segments after removing the ones from 1, 4, and 7
     // 0 lacks the middle segment - locking in it and upper left from 4
     // 6 lacks the upper right - locking in it and lower right from 1
-    // 9 lacks the lower left - locking in it and bottom from 8 minus the 4 and 7 segments
+    // 9 lacks the lower left - locking in it and bottom from 8
     // with 7 locking in the upper segment from 1 all seven segments are known
-    missingSegments.forEach(([segment, digit]) => {
+    missingSegments.forEach(([segment, sixDigits]) => {
         if (segments[2].includes(segment)) {
-            digits[digit] = '6';
+            digits[sixDigits] = '6';
         } else if (segments[4].includes(segment)) {
-            digits[digit] = '0';
+            digits[sixDigits] = '0';
+            segments[4] = intersection(segments[4], segments[2]);
             upperLeft = segments[4][0] === segment ? segments[4][1] : segments[4][0];
         } else if (segments[7].includes(segment)) {
-            digits[digit] = '9';
+            digits[sixDigits] = '9';
             const bottomAndLowerLeft = intersection(segments[7], [...segments[3], ...segments[4]]);
             lowerLeft = bottomAndLowerLeft[0] === segment ? bottomAndLowerLeft[0] : bottomAndLowerLeft[1];
         }
