@@ -1,3 +1,6 @@
+// Advent of Code day 5
+// https://adventofcode.com/2021/day/5
+
 // import { exampleInput as rawInput } from './rawInput.js';
 import { puzzleInput as rawInput } from './rawInput.js';
 
@@ -62,5 +65,7 @@ function findOverlaps(input) {
     return count;
 }
 
-console.log('The answer to part one is:', findOverlaps(partOneInput));
-console.log('The answer to part two is:', findOverlaps(allInputs));
+// console.log('The answer to part one is:', findOverlaps(partOneInput));
+// console.log('The answer to part two is:', findOverlaps(allInputs));
+document.getElementById('partOne').appendChild(document.createTextNode(findOverlaps(partOneInput)));
+document.getElementById('partTwo').appendChild(document.createTextNode(findOverlaps(allInputs)));

@@ -1,3 +1,6 @@
+// Advent of Code day 4
+// https://adventofcode.com/2021/day/4
+
 import { exampleInput as rawInput } from './rawInput.js';
 
 const [numbersString, ...boardStrings] = rawInput.split('\n\n');
@@ -71,5 +74,9 @@ function bingo(boards, partTwo = false) {
     throw new Error('Did not found the winning board');
 }
 
-console.log('Answer for part one is:', bingo(createBoard()));
-console.log('Answer for part two is:', bingo(createBoard(), true));
+// console.log('Answer for part one is:', bingo(createBoard()));
+// console.log('Answer for part two is:', bingo(createBoard(), true));
+const partOne = bingo(createBoard());
+const partTwo = bingo(createBoard(), true);
+document.getElementById('partOne').appendChild(document.createTextNode(partOne));
+document.getElementById('partTwo').appendChild(document.createTextNode(partTwo));

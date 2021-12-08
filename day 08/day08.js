@@ -20,7 +20,7 @@ function partOne() {
             return acc;
         }, 0);
 }
-console.log('The answer to part one is:', partOne());
+// console.log('The answer to part one is:', partOne());
 
 // returns segments not found in both arrays
 function intersection(array1, array2) {
@@ -108,4 +108,6 @@ function partTwo() {
     return rawInput.split('\n').reduce((acc, input) => acc + findDigits(input), 0);
 }
 
-console.log('The answer to part two is:', partTwo());
+// console.log('The answer to part two is:', partTwo());
+document.getElementById('partOne').appendChild(document.createTextNode(partOne()));
+document.getElementById('partTwo').appendChild(document.createTextNode(partTwo()));
