@@ -98,5 +98,7 @@ function getThreeLargestBasins(lowestCoords) {
 const { lowestPointSum, lowestCoords } = getLowestPoints();
 const largestBasins = getThreeLargestBasins(lowestCoords);
 
+// console.log(`Part one: `, lowestPointSum);
+// console.log(`Part two: `, largestBasins);
 document.getElementById('partOne').appendChild(document.createTextNode(lowestPointSum));
 document.getElementById('partTwo').appendChild(document.createTextNode(largestBasins));
