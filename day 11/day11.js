@@ -4,26 +4,27 @@
 // import { exampleInput as rawInput } from './rawInput.js';
 import { puzzleInput as rawInput } from './rawInput.js';
 
+// use for traversing the eight directions of the grid
+const searchDirections = [
+    { x: 0, y: -1 },
+    { x: 0, y: 1 },
+    { x: -1, y: 0 },
+    { x: 1, y: 0 },
+    { x: -1, y: 1 },
+    { x: 1, y: 1 },
+    { x: 1, y: -1 },
+    { x: -1, y: -1 },
+];
+
 // return in bound adjacent coordinates
 function getAdjacentCells(currX, currY, gridSize) {
-    // use for traversing the eight directions of the grid
-    const searchDirections = [
-        { x: 0, y: -1 },
-        { x: 0, y: 1 },
-        { x: -1, y: 0 },
-        { x: 1, y: 0 },
-        { x: -1, y: 1 },
-        { x: 1, y: 1 },
-        { x: 1, y: -1 },
-        { x: -1, y: -1 },
-    ];
     const result = [];
 
     for (let i = 0; i < searchDirections.length; i++) {
-        const x = searchDirections[i].x + currX;
-        const y = searchDirections[i].y + currY;
-        if (x >= 0 && x < gridSize && y >= 0 && y < gridSize) {
-            result.push({ newX: x, newY: y });
+        const newX = searchDirections[i].x + currX;
+        const newY = searchDirections[i].y + currY;
+        if (newX >= 0 && newX < gridSize && newY >= 0 && newY < gridSize) {
+            result.push({ newX, newY });
         }
     }
     return result;
@@ -53,8 +54,7 @@ function incrementGrid(grid) {
 // using breadth first search to find all cascading flashes
 function flash(row, col, grid) {
     let flashes = 1;
-    const cell = { x: row, y: col };
-    const stack = [cell];
+    const stack = [{ x: row, y: col }];
     grid[row][col] = 0;
 
     while (stack.length) {
@@ -64,7 +64,7 @@ function flash(row, col, grid) {
             if (grid[newX][newY] > 0) {
                 // increase the levels of all neighbors that haven't yet flashed
                 grid[newX][newY] += 1;
-                // if that pushes them over 10 flash them and check their neighbors
+                // if that pushes them over 9 flash them and check their neighbors
                 if (grid[newX][newY] > 9) {
                     grid[newX][newY] = 0;
                     flashes += 1;
@@ -87,8 +87,7 @@ function energyStep(grid) {
 
     for (let row = 0; row < grid.length; row++) {
         for (let col = 0; col < grid.length; col++) {
-            const currCell = grid[row][col];
-            if (currCell > 9) {
+            if (grid[row][col] > 9) {
                 // flash this octopus and cascade through neighbors
                 flashes += flash(row, col, grid);
             }
@@ -109,7 +108,7 @@ function countFlashes(grid, endStep = 100) {
     return totalFlashed;
 }
 
-// iterate until all the fish flash at once
+// iterate until all the octopus flash at once
 function findWhenAllFlash(grid) {
     const newGrid = copyGrid(grid);
     let step = 0;
