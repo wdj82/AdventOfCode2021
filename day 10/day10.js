@@ -48,8 +48,11 @@ function getScores() {
     chunks.forEach((currChunk) => {
         const { autoCompleteSum, syntaxScore } = findScores(currChunk);
 
-        if (autoCompleteSum) autoCompleteScores.push(autoCompleteSum);
-        if (syntaxScore) syntaxSum += syntaxScore;
+        if (autoCompleteSum) {
+            autoCompleteScores.push(autoCompleteSum);
+        } else {
+            syntaxSum += syntaxScore;
+        }
     });
 
     // winning autocomplete score is the middle of all sorted scores
