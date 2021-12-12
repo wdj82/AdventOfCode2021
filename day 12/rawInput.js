@@ -1,5 +1,34 @@
-const exampleInput = ``;
+const exampleInput = `start-A
+start-b
+A-c
+A-b
+b-d
+A-end
+b-end`;
 
-const puzzleInput = ``;
+const puzzleInput = `yb-pi
+jg-ej
+yb-KN
+LD-start
+end-UF
+UF-yb
+yb-xd
+qx-yb
+xd-end
+jg-KN
+start-qx
+start-ej
+qx-LD
+jg-LD
+xd-LD
+ej-qx
+end-KN
+DM-xd
+jg-yb
+ej-LD
+qx-UF
+UF-jg
+qx-jg
+xd-UF`;
 
 export { exampleInput, puzzleInput };
