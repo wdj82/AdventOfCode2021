@@ -55,19 +55,15 @@ function getCode(dots, instructions) {
 }
 
 function printCode(dots) {
-    const { height, width } = getWidthAndHeight(dots);
+    // draw the code in the html canvas
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'red';
+    const size = 6;
 
-    const paper = new Array(height + 1);
-    for (let row = 0; row <= height; row++) {
-        paper[row] = new Array(width + 1);
-        for (let col = 0; col <= width; col++) {
-            paper[row][col] = '.';
-        }
-    }
     dots.forEach(([x, y]) => {
-        paper[y][x] = '#';
+        ctx.fillRect(x * size, y * size, size, size);
     });
-    return paper;
 }
 
 const startingDots = rawDots.split('\n').map((line) => line.split(',').map(Number));
@@ -79,8 +75,6 @@ const instructions = rawInstructions.split('\n').map((line) => {
 
 const firstFoldCount = foldPaper(startingDots, instructions[0], true);
 const code = getCode(startingDots, instructions);
-console.log(`Part one: `, firstFoldCount);
-console.log('Part two:', printCode(code));
 
 document.getElementById('partOne').appendChild(document.createTextNode(firstFoldCount));
-document.getElementById('partTwo').appendChild(document.createTextNode('in console'));
+printCode(code);
