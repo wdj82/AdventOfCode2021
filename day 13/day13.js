@@ -4,7 +4,18 @@
 // import { exampleInput as rawInput } from './rawInput.js';
 import { puzzleInput as rawInput } from './rawInput.js';
 
-const [rawDots, rawInstructions] = rawInput.split('\n\n');
+function getInput() {
+    const [rawDots, rawInstructions] = rawInput.split('\n\n');
+
+    const startingDots = rawDots.split('\n').map((line) => line.split(',').map(Number));
+
+    const instructions = rawInstructions.split('\n').map((line) => {
+        const index = line.indexOf('=');
+        return [line[index - 1], Number(line.slice(index + 1))];
+    });
+
+    return { startingDots, instructions };
+}
 
 function getWidthAndHeight(dots) {
     let height = 0;
@@ -16,36 +27,38 @@ function getWidthAndHeight(dots) {
     return { height, width };
 }
 
+// fold the given dots
 function foldPaper(dots, [axis, value], isPartOne = false) {
-    const paper = {};
     const newDots = [];
-    let count = 0;
+    const hash = {};
 
     const { height, width } = getWidthAndHeight(dots);
 
     dots.forEach(([x, y]) => {
+        // flip the dots if they're over the given fold axis' value
         if (axis === 'y' && y > value) {
             y = height - y;
         } else if (axis === 'x' && x > value) {
             x = width - x;
         }
 
-        if (!paper[`${x},${y}`]) {
-            paper[`${x},${y}`] = 1;
+        // avoid duplicates - technically only needed for part one
+        if (!hash[`${x},${y}`]) {
+            hash[`${x},${y}`] = true;
             newDots.push([x, y]);
-            if (isPartOne) {
-                count += 1;
-            }
         }
     });
 
+    // part one just needs the dot count
     if (isPartOne) {
-        return count;
+        return newDots.length;
     }
 
+    // return the folded paper
     return newDots;
 }
 
+// fold the dots following the instructions
 function getCode(dots, instructions) {
     let newDots = [...dots];
     instructions.forEach((instruction) => {
@@ -54,8 +67,8 @@ function getCode(dots, instructions) {
     return newDots;
 }
 
+// draw the code in the html canvas
 function printCode(dots) {
-    // draw the code in the html canvas
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = 'red';
@@ -66,13 +79,7 @@ function printCode(dots) {
     });
 }
 
-const startingDots = rawDots.split('\n').map((line) => line.split(',').map(Number));
-
-const instructions = rawInstructions.split('\n').map((line) => {
-    const index = line.indexOf('=');
-    return [line[index - 1], Number(line.slice(index + 1))];
-});
-
+const { startingDots, instructions } = getInput();
 const firstFoldCount = foldPaper(startingDots, instructions[0], true);
 const code = getCode(startingDots, instructions);
 
