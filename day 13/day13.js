@@ -6,8 +6,6 @@ import { puzzleInput as rawInput } from './rawInput.js';
 
 const [rawDots, rawInstructions] = rawInput.split('\n\n');
 
-let partOne = 0;
-
 function getWidthAndHeight(dots) {
     let height = 0;
     let width = 0;
@@ -18,9 +16,10 @@ function getWidthAndHeight(dots) {
     return { height, width };
 }
 
-function getDots(dots, [axis, value], isPartOne = false) {
+function foldPaper(dots, [axis, value], isPartOne = false) {
     const paper = {};
     const newDots = [];
+    let count = 0;
 
     const { height, width } = getWidthAndHeight(dots);
 
@@ -35,19 +34,22 @@ function getDots(dots, [axis, value], isPartOne = false) {
             paper[`${x},${y}`] = 1;
             newDots.push([x, y]);
             if (isPartOne) {
-                partOne += 1;
+                count += 1;
             }
         }
     });
 
+    if (isPartOne) {
+        return count;
+    }
+
     return newDots;
 }
 
-function getCode(instructions, dots) {
+function getCode(dots, instructions) {
     let newDots = [...dots];
-    instructions.forEach((instruction, index) => {
-        // use index for part one check
-        newDots = getDots(newDots, instruction, index === 0);
+    instructions.forEach((instruction) => {
+        newDots = foldPaper(newDots, instruction);
     });
     return newDots;
 }
@@ -55,7 +57,6 @@ function getCode(instructions, dots) {
 function printCode(dots) {
     const { height, width } = getWidthAndHeight(dots);
 
-    // print the dots for part two code solution
     const paper = new Array(height + 1);
     for (let row = 0; row <= height; row++) {
         paper[row] = new Array(width + 1);
@@ -66,7 +67,7 @@ function printCode(dots) {
     dots.forEach(([x, y]) => {
         paper[y][x] = '#';
     });
-    console.log('Part two:', paper);
+    return paper;
 }
 
 const startingDots = rawDots.split('\n').map((line) => line.split(',').map(Number));
@@ -76,9 +77,10 @@ const instructions = rawInstructions.split('\n').map((line) => {
     return [line[index - 1], Number(line.slice(index + 1))];
 });
 
-const finalDots = getCode(instructions, startingDots);
-console.log(`Part one: `, partOne);
-printCode(finalDots);
+const firstFoldCount = foldPaper(startingDots, instructions[0], true);
+const code = getCode(startingDots, instructions);
+console.log(`Part one: `, firstFoldCount);
+console.log('Part two:', printCode(code));
 
-document.getElementById('partOne').appendChild(document.createTextNode(partOne));
+document.getElementById('partOne').appendChild(document.createTextNode(firstFoldCount));
 document.getElementById('partTwo').appendChild(document.createTextNode('in console'));
