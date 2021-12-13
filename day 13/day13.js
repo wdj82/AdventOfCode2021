@@ -21,7 +21,6 @@ function getWidthAndHeight(dots) {
 function getDots(dots, [axis, value], isPartOne = false) {
     const paper = {};
     const newDots = [];
-    let count = 0;
 
     const { height, width } = getWidthAndHeight(dots);
 
@@ -35,12 +34,11 @@ function getDots(dots, [axis, value], isPartOne = false) {
         if (!paper[`${x},${y}`]) {
             paper[`${x},${y}`] = 1;
             newDots.push([x, y]);
-            count += 1;
+            if (isPartOne) {
+                partOne += 1;
+            }
         }
     });
-    if (isPartOne) {
-        partOne = count;
-    }
 
     return newDots;
 }
