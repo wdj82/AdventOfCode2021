@@ -1,32 +1,58 @@
 // Advent of Code day 23
 // https://adventofcode.com/2021/day/23
 
-// import { exampleInput as rawInput } from './rawInput.js';
-import { puzzleInput as rawInput } from './rawInput.js';
+// const roomA = ['A', 'C'];
+// const roomB = ['D', 'D'];
+// const roomC = ['C', 'B'];
+// const roomD = ['A', 'B'];
 
-const input = rawInput;
+// const rooms = [
+//     ['B', 'A'],
+//     ['C', 'D'],
+//     ['B', 'C'],
+//     ['D', 'A'],
+// ];
 
-console.log(input);
+// const winningRooms = [
+//     ['A', 'A'],
+//     ['B', 'B'],
+//     ['C', 'C'],
+//     ['D', 'D'],
+// ];
 
-// return in bound adjacent coordinates
-function getAdjacentCells(currX, currY) {
-    // use for traversing the four directions of the grid
-    const searchDirections = [
-        { x: 0, y: -1 },
-        { x: 0, y: 1 },
-        { x: -1, y: 0 },
-        { x: 1, y: 0 },
-    ];
-    const result = [];
+const burrow = [
+    [1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 1],
+    [0, 0, 'B', 0, 'C', 0, 'B', 0, 'D', 0, 0],
+    [0, 0, 'A', 0, 'D', 0, 'C', 0, 'A', 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+];
+console.log(burrow);
 
-    for (let i = 0; i < searchDirections.length; i++) {
-        const x = searchDirections[i].x + currX;
-        const y = searchDirections[i].y + currY;
-        if (x >= 0 && x < gridHeight && y >= 0 && y < gridWidth) {
-            result.push({ newX: x, newY: y });
-        }
-    }
-    return result;
+// while the classes are not sorted
+// go through each fish and move them one at a time after every move
+// if no valid moves stop with that fish and go back to try the next one
+// make sure they don't break the rules when moving
+// if they're in the hallway they can only move into their room
+// and only then if no other class is in the room
+// cannot stop right outside the rooms
+// space has to be empty to move in it
+// keep track of costs for the move
+// find all possible moves and return the lowest cost that sorts them
+// special case if it's the in the right room and shouldn't move out
+// recursive?
+// maybe the first see if they can get into their desired room first
+
+function isSorted() {
+    return (
+        burrow[1][2] === 'A' &&
+        burrow[2][2] === 'A' &&
+        burrow[1][4] === 'B' &&
+        burrow[2][4] === 'B' &&
+        burrow[1][6] === 'C' &&
+        burrow[2][6] === 'C' &&
+        burrow[1][8] === 'D' &&
+        burrow[2][8] === 'D'
+    );
 }
 
 // console.log(`Part one: `, 'dunno');
