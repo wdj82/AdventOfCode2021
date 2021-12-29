@@ -1,33 +1,13 @@
 // Advent of Code day 23
 // https://adventofcode.com/2021/day/23
 
-import PriorityQueue from './priorityQueue.js';
-
-// return in bound adjacent coordinates
-function getAdjacentCells(currX, currY, gridHeight, gridWidth) {
-    // use for traversing the four directions of the grid
-    const searchDirections = [
-        { x: 0, y: -1 },
-        { x: 0, y: 1 },
-        { x: -1, y: 0 },
-        { x: 1, y: 0 },
-    ];
-    const result = [];
-
-    for (let i = 0; i < searchDirections.length; i++) {
-        const x = searchDirections[i].x + currX;
-        const y = searchDirections[i].y + currY;
-        if (x >= 0 && x < gridHeight && y >= 0 && y < gridWidth) {
-            result.push({ newX: x, newY: y });
-        }
-    }
-    return result;
-}
+import getPaths from './getPaths.js';
 
 const roomCols = { A: 2, B: 4, C: 6, D: 8 };
 const typeCosts = { A: 1, B: 10, C: 100, D: 1000 };
+const types = ['A', 'B', 'C', 'D'];
 
-// code the x,y where a fish can stop in the hallway
+// the x,y where a shrimp can stop in the hallway
 const hallwayStoppingPoints = [
     [0, 0],
     [0, 1],
@@ -38,132 +18,162 @@ const hallwayStoppingPoints = [
     [0, 10],
 ];
 
-function getPaths([startingX, startingY], burrow) {
-    // console.log(startingX, startingY);
-
-    const nodes = new PriorityQueue();
-    const gridHeight = burrow.length;
-    const gridWidth = burrow[0].length;
-    const distances = [...Array(gridHeight)].map(() => Array(gridWidth).fill(null));
-
-    for (let x = 0; x < gridHeight; x++) {
-        for (let y = 0; y < gridWidth; y++) {
-            if (x === startingX && y === startingY) {
-                // save the starting node as 0 distance
-                distances[x][y] = 0;
-                nodes.enqueue({ x, y }, 0);
-            } else {
-                // all other nodes are infinity distance away
-                distances[x][y] = Infinity;
-                nodes.enqueue({ x, y }, Infinity);
-            }
+function canMoveIntoRoom(type, burrow) {
+    const y = roomCols[type];
+    for (let x = 1; x < burrow.length - 1; x++) {
+        if (burrow[x][y] !== 1 && burrow[x][y] !== type) {
+            return false;
         }
     }
+    return true;
+}
 
-    while (!nodes.isEmpty()) {
-        const { x, y } = nodes.dequeue().value;
+function isRoomDone(type, burrow) {
+    const y = roomCols[type];
+    for (let x = 1; x < burrow.length - 1; x++) {
+        if (burrow[x][y] !== type) {
+            return false;
+        }
+    }
+    return true;
+}
 
-        if (distances[x][y] !== Infinity) {
-            getAdjacentCells(x, y, gridHeight, gridWidth).forEach(({ newX, newY }) => {
-                // console.log(`burrow[${newX},${newY}] = ${burrow[newX][newY]}`);
-                if (burrow[newX][newY] !== 0) {
-                    const possibleNewMinDistance = distances[x][y] + burrow[newX][newY];
+function copyBurrow(oldBurrow) {
+    const newBurrow = new Array(oldBurrow.length);
+    for (let i = 0; i < newBurrow.length; i++) {
+        newBurrow[i] = new Array(oldBurrow[0].length);
+        for (let j = 0; j < newBurrow[i].length; j++) {
+            newBurrow[i][j] = oldBurrow[i][j];
+        }
+    }
+    return newBurrow;
+}
 
-                    // check if the new path to each neighbor is shorter than previous recorded path
-                    if (possibleNewMinDistance < distances[newX][newY]) {
-                        // save new smallest distance to this neighbor
-                        distances[newX][newY] = possibleNewMinDistance;
-                        // enqueue with new priority
-                        nodes.enqueue({ x: newX, y: newY }, possibleNewMinDistance);
+// return all possible moves from hallway to room and their cost for this burrow
+function movesToRoom(burrow) {
+    const nextBurrows = [];
+
+    hallwayStoppingPoints.forEach(([x, y]) => {
+        const shrimp = burrow[x][y];
+        if (shrimp !== 1) {
+            const distance = getPaths([x, y], burrow);
+
+            if (canMoveIntoRoom(shrimp, burrow)) {
+                const roomY = roomCols[shrimp];
+
+                // look bottom up for empty space in the room to move into
+                for (let roomX = burrow.length - 2; roomX >= 1; roomX--) {
+                    if (distance[roomX][roomY] !== Infinity) {
+                        const cost = distance[roomX][roomY] * typeCosts[shrimp];
+                        const newBurrow = copyBurrow(burrow);
+                        newBurrow[x][y] = 1;
+                        newBurrow[roomX][roomY] = shrimp;
+                        nextBurrows.push({ newBurrow, cost });
+                        break;
                     }
                 }
-            });
+            }
         }
-    }
-    return distances;
+    });
+
+    return nextBurrows;
 }
 
-function getRoom(type, burrow) {
-    const room = [];
-    const y = roomCols[type];
-    for (let x = 1; x < burrow.length; x++) {
-        room.push(burrow[x][y]);
-    }
-    return room;
-}
+// return all possible moves from rooms to the hallway and their cost for this burrow
+function movesToHallway(burrow) {
+    const newMoves = [];
+    types.forEach((type) => {
+        if (!isRoomDone(type, burrow) && !canMoveIntoRoom(type, burrow)) {
+            const roomY = roomCols[type];
+            for (let roomX = burrow.length - 2; roomX >= 1; roomX--) {
+                const shrimp = burrow[roomX][roomY];
 
-function getAmphipods(burrow) {
-    const hallwayShrimp = [];
-    const roomShrimp = [];
-    for (let x = 0; x < burrow.length; x++) {
-        for (let y = 0; y < burrow[0].length; y++) {
-            const cell = burrow[x][y];
-            if (cell !== 0 && cell !== 1) {
-                if (x === 0) {
-                    hallwayShrimp.push({ type: cell, x, y });
-                } else {
-                    roomShrimp.push({ type: cell, x, y });
+                // check for shrimp in room and empty space above it so it can get out of room
+                if (shrimp !== 1 && burrow[roomX - 1][roomY] === 1) {
+                    const distance = getPaths([roomX, roomY], burrow);
+
+                    // save new burrow states for all possible hallway moves
+                    hallwayStoppingPoints.forEach(([x, y]) => {
+                        if (distance[x][y] !== Infinity) {
+                            const cost = distance[x][y] * typeCosts[shrimp];
+                            const newBurrow = copyBurrow(burrow);
+                            newBurrow[x][y] = shrimp;
+                            newBurrow[roomX][roomY] = 1;
+                            newMoves.push({ newBurrow, cost });
+                        }
+                    });
+                    break;
                 }
             }
         }
+    });
+
+    return newMoves;
+}
+
+function getPossibleMoves(burrow) {
+    const hallwayToRoomMoves = movesToRoom(burrow);
+    // if we have moves to room it's always the best move - don't calculate moves to hallway for this burrow state
+    if (hallwayToRoomMoves.length !== 0) {
+        return hallwayToRoomMoves;
+    }
+    return movesToHallway(burrow);
+}
+
+// cache used to save discovered costs
+const seenBurrowStates = {};
+
+// recursively search all possible moves and find the lowest cost to all rooms sorted
+function findLowestCost(burrow) {
+    // check if we've seen this burrow before - if so return it's saved cost
+    const key = JSON.stringify(burrow);
+    if (seenBurrowStates[key]) {
+        return seenBurrowStates[key];
     }
 
-    return { hallwayShrimp, roomShrimp };
-}
+    // all rooms sorted return 0 cost
+    if (types.every((type) => isRoomDone(type, burrow))) {
+        return 0;
+    }
 
-function movesToRoom(hallwayShrimp, burrow) {
-    hallwayShrimp.forEach(({ type, x, y }) => {
-        console.log(`Type ${type} at [${x}, ${y}]`);
-        const room = getRoom(type, burrow);
-        console.log({ room });
-        if (room.every((cell) => cell === 1 || cell === type)) {
-            console.log('');
+    let leastCost = Infinity;
+
+    // depth first search every possible move for this burrow until end state
+    // if no possible moves will return infinity
+    getPossibleMoves(burrow).forEach(({ newBurrow, cost }) => {
+        cost += findLowestCost(newBurrow);
+
+        if (cost < leastCost) {
+            leastCost = cost;
         }
-        const distance = getPaths([x, y], burrow);
     });
+
+    // cache the lowest cost found for this burrow for future searches
+    seenBurrowStates[key] = leastCost;
+    return leastCost;
 }
 
-function findLowestCost(burrow) {
-    const { hallwayShrimp, roomShrimp } = getAmphipods(burrow);
-    console.log({ hallwayShrimp, roomShrimp });
-    movesToRoom(hallwayShrimp, burrow);
-}
-
-const burrow = [
+// didn't feel like parsing the input
+const partOneBurrow = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [0, 0, 'B', 0, 'C', 0, 'B', 0, 'D', 0, 0],
     [0, 0, 'A', 0, 'D', 0, 'C', 0, 'A', 0, 0],
+    [0, 0, 'C', 0, 'D', 0, 'B', 0, 'B', 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
 
-// const burrow = [
-//     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-//     [0, 0, 'B', 0, 'C', 0, 'B', 0, 'D', 0, 0],
-//     [0, 0, 'D', 0, 'C', 0, 'B', 0, 'A', 0, 0],
-//     [0, 0, 'D', 0, 'B', 0, 'A', 0, 'C', 0, 0],
-//     [0, 0, 'A', 0, 'D', 0, 'C', 0, 'A', 0, 0],
-//     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-// ];
+const partTwoBurrow = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 'A', 0, 'D', 0, 'C', 0, 'A', 0, 0],
+    [0, 0, 'D', 0, 'C', 0, 'B', 0, 'A', 0, 0],
+    [0, 0, 'D', 0, 'B', 0, 'A', 0, 'C', 0, 0],
+    [0, 0, 'C', 0, 'D', 0, 'B', 0, 'B', 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+];
 
-// const burrow = [
-//     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-//     [0, 0, 'A', 0, 'D', 0, 'C', 0, 'A', 0, 0],
-//     [0, 0, 'C', 0, 'D', 0, 'B', 0, 'B', 0, 0],
-//     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-// ];
+const partOne = findLowestCost(partOneBurrow);
+const partTwo = findLowestCost(partTwoBurrow);
 
-// const burrow = [
-//     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-//     [0, 0, 'A', 0, 'D', 0, 'C', 0, 'A', 0, 0],
-//     [0, 0, 'D', 0, 'C', 0, 'B', 0, 'A', 0, 0],
-//     [0, 0, 'D', 0, 'B', 0, 'A', 0, 'C', 0, 0],
-//     [0, 0, 'C', 0, 'D', 0, 'B', 0, 'B', 0, 0],
-//     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-// ];
-
-findLowestCost(burrow);
-
-// console.log(`Part one: `, 'dunno');
-// console.log(`Part two: `, 'dunno');
-document.getElementById('partOne').appendChild(document.createTextNode('dunno'));
-document.getElementById('partTwo').appendChild(document.createTextNode('dunno'));
+console.log(`Part one: `, partOne);
+console.log(`Part two: `, partTwo);
+document.getElementById('partOne').appendChild(document.createTextNode(partOne));
+document.getElementById('partTwo').appendChild(document.createTextNode(partTwo));
