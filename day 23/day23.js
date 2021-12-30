@@ -125,15 +125,15 @@ const seenBurrowStates = {};
 
 // recursively search all possible moves and find the lowest cost to all rooms sorted
 function findLowestCost(burrow) {
+    // all rooms sorted return 0 cost
+    if (types.every((type) => isRoomDone(type, burrow))) {
+        return 0;
+    }
+
     // check if we've seen this burrow before - if so return it's saved cost
     const key = JSON.stringify(burrow);
     if (seenBurrowStates[key]) {
         return seenBurrowStates[key];
-    }
-
-    // all rooms sorted return 0 cost
-    if (types.every((type) => isRoomDone(type, burrow))) {
-        return 0;
     }
 
     let leastCost = Infinity;

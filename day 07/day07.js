@@ -4,30 +4,24 @@
 // import { exampleInput as rawInput } from './rawInput.js';
 import { puzzleInput as rawInput } from './rawInput.js';
 
-// save how many crabs are on each level and find the max level in the array
-function sortCrabs() {
+function findLeastFuel() {
+    // save how many crabs are on each level and find the max level in the array
     const crabLevelsArray = rawInput.split(',').map(Number);
     let maxLevel = 0;
     const crabsPerLevel = {};
     for (let i = 0; i < crabLevelsArray.length; i++) {
         const level = crabLevelsArray[i];
-        const count = crabsPerLevel[level];
 
-        if (count) {
-            crabsPerLevel[level] = count + 1;
-        } else {
-            crabsPerLevel[level] = 1;
-        }
+        crabsPerLevel[level] = crabsPerLevel[level] + 1 || 1;
+
         maxLevel = Math.max(maxLevel, level);
     }
-    return { crabsPerLevel, maxLevel };
-}
 
-// calculate the fuel cost to move all crabs to each level, returning the smallest cost
-function findLeastFuel({ crabsPerLevel, maxLevel }) {
     // saving part one and part two answers in an array
     const minFuelCosts = [Number.MAX_VALUE, Number.MAX_VALUE];
 
+    // calculate the fuel cost to move all crabs to each possible level, returning the smallest cost
+    // would have been faster to find the medium for part one and mean for part two
     for (let targetLevel = 0; targetLevel <= maxLevel; targetLevel++) {
         const fuelCosts = [0, 0];
 
@@ -45,8 +39,7 @@ function findLeastFuel({ crabsPerLevel, maxLevel }) {
     return minFuelCosts;
 }
 
-const crabs = sortCrabs();
-const [partOneMinFuelCost, partTwoMinFuelCost] = findLeastFuel(crabs);
+const [partOneMinFuelCost, partTwoMinFuelCost] = findLeastFuel();
 // console.log('The answer to part one is:', partOneMinFuelCost);
 // console.log('The answer to part two is:', partTwoMinFuelCost);
 document.getElementById('partOne').appendChild(document.createTextNode(partOneMinFuelCost));

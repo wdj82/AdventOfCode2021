@@ -60,7 +60,7 @@ function scan() {
     const orientedScanners = [{ location: [0, 0, 0], orientedBeacons: scanners.shift(), isChecked: false }];
 
     while (scanners.length) {
-        for (let i = 0; i < orientedScanners.length; ++i) {
+        for (let i = 0; i < orientedScanners.length; i++) {
             const { location, orientedBeacons, isChecked } = orientedScanners[i];
             if (!isChecked) {
                 orientedScanners[i].isChecked = true;

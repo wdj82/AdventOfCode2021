@@ -4,7 +4,7 @@
 // import { exampleInput as rawInput } from './rawInput.js';
 import { puzzleInput as rawInput } from './rawInput.js';
 
-// const rawInput = `acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf`;
+// const testInput = `acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf`;
 
 function partOne() {
     return rawInput
@@ -20,7 +20,7 @@ function partOne() {
             return acc;
         }, 0);
 }
-// console.log('The answer to part one is:', partOne());
+console.log('The answer to part one is:', partOne());
 
 // returns segments not found in both arrays
 function intersection(array1, array2) {
@@ -28,13 +28,14 @@ function intersection(array1, array2) {
 }
 
 function findDigits(input) {
-    // pull out the segments for the unique signals and the outputs, sorting them all
+    // pull out the segments for the unique signals and the outputs,
+    // sorting the letters (fcadb and cdbaf are the same digit: abcdf)
     const [signals, outputs] = input
         .split(' | ')
         .map((segments) => segments.split(' ').map((signal) => signal.split('').sort().join('')));
 
     const digits = {};
-    const segments = { 2: [], 3: null, 4: null, 5: [], 6: [], 7: null };
+    const segments = { 2: [], 5: [], 6: [] };
 
     // need these two segments to find 2, 3, and 5
     let upperLeft = null;
@@ -108,6 +109,6 @@ function partTwo() {
     return rawInput.split('\n').reduce((acc, input) => acc + findDigits(input), 0);
 }
 
-// console.log('The answer to part two is:', partTwo());
+console.log('The answer to part two is:', partTwo());
 document.getElementById('partOne').appendChild(document.createTextNode(partOne()));
 document.getElementById('partTwo').appendChild(document.createTextNode(partTwo()));
