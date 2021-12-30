@@ -25,7 +25,7 @@ function makePolymer(maxStep) {
     }, {});
 
     // for each step create the new pairs from the current pairs
-    // e.x. NN becomes NC and CN in new list times the number of NNs there are
+    // e.g. NN becomes NC and CN in new list times the number of NNs there are
     let step = 0;
     while (step < maxStep) {
         const nextPairCounts = {};

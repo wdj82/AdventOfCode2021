@@ -1,34 +1,34 @@
 // Advent of Code day 21
 // https://adventofcode.com/2021/day/21
 
-class Player {
-    constructor(position, score = 0) {
-        this.score = score;
-        this.position = position;
-    }
-
-    playTurn(rolls) {
-        this.position += rolls;
-
-        if (this.position % 10 === 0) {
-            this.position = 10;
-        } else if (this.position > 10) {
-            this.position %= 10;
-        }
-
-        this.score += this.position;
-    }
-
-    isWinner(partTwo = false) {
-        if (partTwo) {
-            return this.score >= 21;
-        }
-        return this.score >= 1000;
-    }
-}
-
 // part one
 function playDeterministicGame() {
+    class Player {
+        constructor(position, score = 0) {
+            this.score = score;
+            this.position = position;
+        }
+
+        playTurn(rolls) {
+            this.position += rolls;
+
+            if (this.position % 10 === 0) {
+                this.position = 10;
+            } else if (this.position > 10) {
+                this.position %= 10;
+            }
+
+            this.score += this.position;
+        }
+
+        isWinner(partTwo = false) {
+            if (partTwo) {
+                return this.score >= 21;
+            }
+            return this.score >= 1000;
+        }
+    }
+
     let dieCount = 0;
     let die = 0;
     function rollDie() {
